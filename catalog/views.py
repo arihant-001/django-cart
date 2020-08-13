@@ -22,7 +22,16 @@ class ProductDetailView(DetailView):
 
 class ProductListView(ListView):
     model = Product
+    paginate_by = 10
     template_name = "catalog/product_list.html"
+
+    def get_queryset(self):
+        return Product.objects.all()[:5]
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductListView, self).get_context_data(**kwargs)
+        context['some_data'] = 'This is just some data'
+        return context
 
 
 class ProductCreateView(CreateView):
