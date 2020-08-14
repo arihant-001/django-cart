@@ -29,3 +29,7 @@ urlpatterns += [
     path('profile/<int:pk>/update/', views.UserProfileUpdateView.as_view(), name='profile-update'),
     path('profile/<int:pk>/delete/', views.UserProfileDeleteView.as_view(), name='profile-delete'),
 ]
+
+urlpatterns += [
+    path('register/', views.register, name='register'),
+]

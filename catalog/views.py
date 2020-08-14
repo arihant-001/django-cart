@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 from .models import Product, Category, UserProfile
@@ -14,7 +16,27 @@ def index(request):
     return render(request, 'index.html', context=context)
 
 
-# Product views
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        print("method is post")
+        if form.is_valid():
+            print("form  is valid")
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            login(request, user)
+            return redirect('index')
+        else:
+            for msg in form.error_messages:
+                print(form.error_messages[msg])
+
+            return render(request=request,
+                          template_name="registration/register.html",
+                          context={"form": form})
+    form = UserCreationForm
+    return render(request=request, template_name="registration/register.html", context={"form": form})
+
+
 class ProductDetailView(DetailView):
     model = Product
     template_name = "catalog/product_detail.html"
