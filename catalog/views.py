@@ -4,13 +4,27 @@ from django.shortcuts import render, redirect
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 from .models import Product, Category, UserProfile
+from cart.models import Cart
 
 
 def index(request):
     num_products = Product.objects.all().count()
+    products = Product.objects.all()
+    if 'cart_id' not in request.session:
+        if request.user.is_authenticated:
+            cart = Cart(owner=request.user)
+        else:
+            cart = Cart()
+        cart.save()
+        request.session['cart_id'] = cart.id
+        request.session['cart_count'] = cart.get_total_items()
+        request.session.is_modified = True
 
     context = {
         'num_products': num_products,
+        'product_list': products,
+        'cart_id': request.session['cart_id'],
+        'cart_count': request.session['cart_count']
     }
     # Render the HTML template index.html with the data in the context variable
     return render(request, 'index.html', context=context)
@@ -48,7 +62,7 @@ class ProductListView(ListView):
     template_name = "catalog/product_list.html"
 
     def get_queryset(self):
-        return Product.objects.all()[:5]
+        return Product.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super(ProductListView, self).get_context_data(**kwargs)
