@@ -5,6 +5,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.views.generic import ListView
 
 
 class CartDetail(APIView):
@@ -91,3 +92,13 @@ class CartItemDetail(APIView):
         cart_item = self.get_object(pk)
         cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CartItemListView(ListView):
+    model = CartItem
+    paginate_by = 10
+    template_name = "checkout.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CartItemListView, self).get_context_data(**kwargs)
+        return context

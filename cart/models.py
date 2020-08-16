@@ -10,6 +10,16 @@ class CartItem(models.Model):
     cart_id = models.IntegerField(null=True)
 
     def __str__(self):
+        return self.name
+
+    def get_price(self):
+        # product = Product.objects.get(pk=self.product)
+        # print(product)
+        return self.quantity*self.product.price
+
+    def get_name(self):
+        # product = Product.objects.get(pk=self.product)
+        # print(product)
         return self.product.name
 
 

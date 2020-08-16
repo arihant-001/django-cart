@@ -11,6 +11,7 @@ function updateCart() {
         url: "/cart/" + $("#cart").attr("data-id"),
     }).done(function(t) {
         updateCartCount(t.quantity)
+        console.log(t)
     }).fail(function(t) {
         console.log("fail to add to cart");
     })
