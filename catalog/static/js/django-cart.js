@@ -17,7 +17,8 @@ function updateCart() {
 }
 
 $( document ).ready(function() {
-    console.log( "ready!" );
+    console.log( "ready!" )
+    updateCart()
     $(document).on("click", ".add-to-cart", function(){
        $.ajax({
             method: "POST",
