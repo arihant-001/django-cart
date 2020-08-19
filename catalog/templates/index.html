@@ -1,24 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Django-Cart Home</h2>
-<ul>
-    <li><strong>Products:</strong> {{ num_products }}</li>
-</ul>
-<h2>Product List</h2>
+<h2>All Products</h2>
 {% if product_list %}
 <div class="row">
     {% for product in product_list %}
     <div class="col-6 col-md-4">
-      <div class="thumnail">
-        <a href="{{ product.get_absolute_url }}">
-          <img class="img-fluid" src="https://pcbonlineshop.com/var/photo/product/2000x4000/4/176/4.jpg"/>
-          <h5 class="text-center top-pad-10">{{ product.name }}</h5>
-          <h6 class="text-center top-pad-10">{{ product.price }}</h6>
-        </a>
-        <p class="text-center">
-          <a class="btn btn-primary add-to-cart" role="button" data-id="{{ product.id }}">Add to cart</a>
-        </p>
-      </div>
+        <div class="thumbnail">
+            <a href="{{ product.get_absolute_url }}">
+                <img class="img-fluid" src="https://pcbonlineshop.com/var/photo/product/2000x4000/4/176/4.jpg"/>
+                <h5 class="text-center top-pad-10">{{ product.name }}</h5>
+                <h6 class="text-center top-pad-10">{{ product.price }}</h6>
+            </a>
+            <p class="text-center">
+                <a class="btn btn-primary add-to-cart" role="button" data-id="{{ product.id }}">Add to cart</a>
+            </p>
+        </div>
     </div>
     {% endfor %}
 </div>
