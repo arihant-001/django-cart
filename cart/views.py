@@ -102,5 +102,14 @@ class CartItemListView(ListView):
     template_name = "cart/cart_detail.html"
 
     def get_context_data(self, **kwargs):
+        # if 'cart_id' not in self.request.session:
+        #     if self.request.user.is_authenticated:
+        #         cart = Cart(owner=self.request.user)
+        #     else:
+        #         cart = Cart()
+        #     cart.save()
+        #     request.session['cart_id'] = cart.id
+        #     request.session['cart_count'] = cart.get_total_items()
+        #     request.session.is_modified = True
         context = super(CartItemListView, self).get_context_data(**kwargs)
         return context

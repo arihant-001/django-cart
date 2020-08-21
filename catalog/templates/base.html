@@ -67,7 +67,7 @@
             {% endif %}
             <ul class="navbar-nav">
                 <li class="nav-item" id="cart" data-id="{{ cart_id }}">
-                    <a href="{% url 'checkout' %}" class="btn menu-btn">
+                    <a href="{% url 'cart_details' %}" class="btn menu-btn">
                         Cart
                         <span class="badge badge-danger" id="cart-quantity">{{ cart_count }}</span></a>
                 </li>

@@ -34,3 +34,11 @@ body {
     margin-top:auto;
     margin-bottom: auto;
 }
+
+.float-right{
+    float:right;
+}
+
+.btn-success{
+    color: red;
+}
