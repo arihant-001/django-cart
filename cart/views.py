@@ -5,7 +5,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.views.generic import ListView
-from rest_framework.decorators import api_view, renderer_classes
 
 
 class CartView(APIView):
@@ -100,7 +99,7 @@ class CartItemView(APIView):
 class CartItemListView(ListView):
     model = CartItem
     paginate_by = 10
-    template_name = "checkout.html"
+    template_name = "cart/cart_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super(CartItemListView, self).get_context_data(**kwargs)

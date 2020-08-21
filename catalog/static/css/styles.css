@@ -1,3 +1,7 @@
+body {
+    background-color: rgb(240,240,240)
+}
+
 .sidebar-nav {
     margin-top: 20px;
     padding: 0;
@@ -8,6 +12,25 @@
     margin: 15px;
 }
 
+.margin-5{
+    margin: 5px;
+}
+
 .product-wrapper{
     margin:auto;
+}
+
+.padding-zero{
+    padding: 0px;
+}
+
+.box-element{
+    padding:10px;
+}
+
+.product-price{
+    display:inline-block;
+    float: right;
+    margin-top:auto;
+    margin-bottom: auto;
 }
