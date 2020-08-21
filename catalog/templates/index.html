@@ -12,7 +12,7 @@
                 <h6 class="align-self-center text-dark"><strong>{{ product.name }}</strong></h6>
             </a>
             <hr class="margin-5">
-            <a class="btn btn-primary add-to-cart" data-id="{{ product.id }}">Add to cart</a>
+            <a class="btn btn-primary add-to-cart" data-product-id="{{ product.id }}">Add to cart</a>
             <h4 class="product-price">₹{{ product.price|floatformat:2 }}</h4>
 
         </div>

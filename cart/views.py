@@ -1,11 +1,12 @@
 from cart.models import Cart, CartItem, Order, OrderItem
+from catalog.models import Product
 from cart.serializers import CartSerializer, CartItemSerializer
 from django.shortcuts import render
 from django.http import Http404, JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.views.generic import ListView
+import json
 
 
 class CartView(APIView):
@@ -50,26 +51,26 @@ def cart_item_exist(serializer):
 
 
 def update_cart_quantity(request):
-    if request.method == 'POST':
-        data = request.POST
-        serializer = CartItemSerializer(data=data)
-        if serializer.is_valid():
-            if cart_item_exist(serializer):
-                print(serializer.validated_data)
-                cart_item = CartItem.objects.get(
-                    product=serializer.validated_data['product'],
-                    cart_id=serializer.validated_data['cart_id'])
-                cart_item.quantity += serializer.validated_data['quantity']
-                cart_item.save()
-                serializer = CartItemSerializer(cart_item)
-                return JsonResponse(serializer.data, status=status.HTTP_200_OK)
-            else:
-                cart_item = serializer.save()
-                cart = Cart.objects.get(pk=serializer.validated_data['cart_id'])
-                cart.items.add(cart_item)
-                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+    data = json.loads(request.body.decode('utf-8'))
+    product_id = data['product_id']
+    action = data['action']
 
-    return JsonResponse(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    product = Product.objects.get(id=product_id)
+    cart_user = request.user.cartuser
+    order, created = Order.objects.get_or_create(user=cart_user, complete=False)
+    order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+    if action == 'add':
+        order_item.quantity += 1
+    elif action == 'sub':
+        order_item.quantity -= 1
+
+    order_item.save()
+
+    if order_item.quantity <= 0:
+        order_item.delete()
+
+    return JsonResponse('Item added', safe=False, status=status.HTTP_200_OK)
 
 
 def get_cart_item_by_product_and_cart_id(serializer):
@@ -120,7 +121,6 @@ def checkout(request):
         cart_user = request.user.cartuser
         print(cart_user.email)
         order, created = Order.objects.get_or_create(user=cart_user, complete=False)
-        # print(order.get_total)
         items = order.orderitem_set.all()
         print(items)
     else:
@@ -132,3 +132,16 @@ def checkout(request):
     context = {'cart_items': items, 'order': order}
     return render(request, 'cart/checkout.html', context=context)
 
+
+def get_cart_quantity(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            cart_user = request.user.cartuser
+            order, created = Order.objects.get_or_create(user=cart_user, complete=False)
+            quantity = order.get_total_quantity
+        else:
+            quantity = 0
+        data = {'quantity': quantity}
+        return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
+
+    return JsonResponse("error", safe=False, status=status.HTTP_400_BAD_REQUEST)

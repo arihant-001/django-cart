@@ -27,11 +27,11 @@
                 <div class="col-12 col-md-6 mb-2">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <button class="btn btn-primary" type="button">-</button>
+                            <button class="btn btn-primary sub-from-cart" data-product-id="{{ cart_item.product.id }}" type="button">-</button>
                         </div>
-                        <input type="number" class="form-control text-center" value="{{ cart_item.quantity }}">
+                        <input type="number" disabled class="form-control text-center" value="{{ cart_item.quantity }}">
                         <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">+</button>
+                            <button class="btn btn-primary add-to-cart" data-product-id="{{ cart_item.product.id }}" type="button">+</button>
                         </div>
                     </div>
                 </div>

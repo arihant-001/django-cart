@@ -1,4 +1,4 @@
-function updateCartCount(q) {
+function updateCartTag(q) {
     console.log(q)
     $("#cart-quantity").text(q);
 
@@ -8,53 +8,50 @@ function updateCartCount(q) {
 function updateCart() {
     $.ajax({
         method: "GET",
-        url: "/cart/" + $("#cart").attr("data-id"),
+        url: "/cart/cart_quantity",
     }).done(function(t) {
-        updateCartCount(t.quantity)
+        updateCartTag(t.quantity)
         console.log(t)
     }).fail(function(t) {
         console.log("fail to add to cart");
     })
 }
 
+function sendUpdateRequest(product_id, action) {
+    var form = document.getElementById('form')
+    const csrftoken = form.getElementsByTagName('input')[0].value
+    var data = {
+        product_id: product_id,
+        quantity: 1,
+        action: action
+    }
+    $.ajax({
+        method: "POST",
+        headers: {
+            'x-CSRFToken': csrftoken,
+        },
+        url: "/cart/update_cart/",
+        data: JSON.stringify(data)
+    }).done(function(t) {
+        console.log(t)
+//        updateCart()
+        location.reload()
+    }).fail(function(t) {
+        console.log("fail to add to cart");
+    })
+}
 $( document ).ready(function() {
     console.log( "ready!" )
     updateCart()
     $(document).on("click", ".add-to-cart", function(){
-        var form = document.getElementById('form')
-        const csrftoken = form.getElementsByTagName('input')[0].value
-       $.ajax({
-            method: "POST",
-            headers: {
-                'x-CSRFToken': csrftoken,
-            },
-            url: "/cart/updatecartitem/",
-            data: {
-                product: $(this).attr("data-id"),
-                quantity: 1,
-                cart_id: $("#cart").attr("data-id")
-            }
-        }).done(function(t) {
-            console.log(t)
-            updateCart()
-        }).fail(function(t) {
-            console.log("fail to add to cart");
-        })
+        var product_id = $(this).attr("data-product-id")
+        console.log(product_id)
+        sendUpdateRequest(product_id, 'add')
+    });
+
+    $(document).on("click", ".sub-from-cart", function(){
+        var product_id = $(this).attr("data-product-id")
+        console.log(product_id)
+        sendUpdateRequest(product_id, 'sub')
     });
 });
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
