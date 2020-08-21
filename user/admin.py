@@ -1,3 +1,7 @@
 from django.contrib import admin
+from user.models import CartUser
 
-# Register your models here.
+
+@admin.register(CartUser)
+class CartUserAdmin(admin.ModelAdmin):
+    pass
