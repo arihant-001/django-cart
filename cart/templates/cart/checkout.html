@@ -1,41 +1,71 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Cart Items</h2>
-{% if cartitem_list %}
+{% extends 'base.html' %}
+{% block content%}
 <div class="row">
-    {% for cartitem in cartitem_list %}
-    <div class="row h-200 margin-15">
-        <div class="col-4 col-md-3">
-            <img class="img-fluid" src="https://pcbonlineshop.com/var/photo/product/2000x4000/4/176/4.jpg">
-        </div>
-        <div class="col-8 col-md-9">
-            <div class="row">
-                <div class="col-12 mt-md-4">
-                    <h6><a href="{{ cartitem.get_absolute_url }}">{{ cartitem.get_name }}</a></h6>
-                </div>
-                <div class="col-12 col-md-6 mb-2">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <button class="btn btn-primary" type="button">-</button>
-                        </div>
-                        <input type="number" class="form-control text-center" value="{{ cartitem.quantity }}">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">+</button>
-                        </div>
+	<div class="col-lg-6">
+		<div class="box-element shadow-sm bg-white" id="form-wrapper">
+            <form id="form">
+                <div id="user-info">
+                    <div class="form-field">
+                        <input required class="form-control" type="text" name="name" placeholder="Name..">
+                    </div>
+                    <div class="form-field">
+                        <input required class="form-control" type="email" name="email" placeholder="Email..">
                     </div>
                 </div>
-                <div class="col-4 col-md-2">
-                    <button class="btn btn-danger" type="button">Delete</button>
+
+                <div id="shipping-info">
+                    <hr>
+                    <p>Shipping Information:</p>
+                    <hr>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="address" placeholder="Address..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="city" placeholder="City..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="state" placeholder="State..">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="zipcode" placeholder="Zip code..">
+                    </div>
                 </div>
-                <div class="col-8 col-md-4 align-self-center text-right">
-                    <strong class="my-auto">₹ {{ cartitem.get_price }}</strong>
+                <hr>
+                <input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
+            </form>
+            <br>
+            <div class="box-element" hidden id="payment-info">
+                <small>Paypal Options</small>
+            </div>
+		</div>
+		
+	</div>
+
+	<div class="col-lg-6 box-element bg-white shadow-sm">
+        <h4> Order Summary </h4>
+        <h6>Total: </h6>
+        <h6>Items: </h6>
+		{% for cartitem in cart_items %}
+        <div class="row h-200 margin-5 bg-white shadow-sm">
+            <div class="col-4 col-md-3 padding-zero align-self-center" height="100%">
+                {% load static %}
+                <img class="img-fluid" src="{% static 'images/placeholder.png' %}" height="100%">
+            </div>
+            <div class="col-8 col-md-9">
+                <div class="row box-element">
+                    <div class="col-12">
+                        <h6><a href="{{ cartitem.get_absolute_url }}">{{ cartitem.get_name }}</a></h6>
+                    </div>
+                    <div class="col-8 align-self-center">
+                        <strong class="my-auto">Quantity: {{ cartitem.quantity }}</strong>
+                    </div>
+                    <div class="col-8 col-md-4 align-self-center text-right">
+                        <strong class="my-auto">₹ {{ cartitem.get_price }}</strong>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    {% endfor %}
+        {% endfor %}
+	</div>
 </div>
-{% else %}
-<p>There are no items in the cart.</p>
-{% endif %}
-{% endblock %}
+{% endblock content%}

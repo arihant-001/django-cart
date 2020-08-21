@@ -1,5 +1,6 @@
 from cart.models import Cart, CartItem
 from cart.serializers import CartSerializer, CartItemSerializer
+from django.shortcuts import render
 from django.http import Http404, JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -113,3 +114,13 @@ class CartItemListView(ListView):
         #     request.session.is_modified = True
         context = super(CartItemListView, self).get_context_data(**kwargs)
         return context
+
+
+def checkout(request):
+    cart_items = CartItem.objects.all()
+
+    context = {
+        'cart_items': cart_items
+    }
+    return render(request, 'cart/checkout.html', context=context)
+
