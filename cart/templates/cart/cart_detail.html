@@ -4,9 +4,10 @@
 {% if cartitem_list %}
 <div class="row">
     {% for cartitem in cartitem_list %}
-    <div class="row h-200 margin-15">
-        <div class="col-4 col-md-3">
-            <img class="img-fluid" src="https://pcbonlineshop.com/var/photo/product/2000x4000/4/176/4.jpg">
+    <div class="row h-200 margin-5 bg-white">
+        <div class="col-4 col-md-3 padding-zero align-self-center" height="100%">
+            {% load static %}
+            <img class="img-fluid" src="{% static 'images/placeholder.png' %}" height="100%">
         </div>
         <div class="col-8 col-md-9">
             <div class="row">
