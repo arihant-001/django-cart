@@ -20,6 +20,10 @@ body {
     margin:auto;
 }
 
+.margin-auto{
+    margin:auto;
+}
+
 .padding-zero{
     padding: 0px;
 }
@@ -41,4 +45,14 @@ body {
 
 .btn-success{
     color: red;
+}
+
+.size-200{
+    width: 200px;
+    height: 200px;
+}
+
+.size-100{
+    width: 100px;
+    height: 100px;
 }

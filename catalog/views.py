@@ -8,23 +8,19 @@ from cart.models import Cart
 
 
 def index(request):
-    num_products = Product.objects.all().count()
     products = Product.objects.all()
-    if 'cart_id' not in request.session:
-        if request.user.is_authenticated:
-            cart = Cart(owner=request.user)
-        else:
-            cart = Cart()
-        cart.save()
-        request.session['cart_id'] = cart.id
-        request.session['cart_count'] = cart.get_total_items()
-        request.session.is_modified = True
+    # if 'cart_id' not in request.session:
+    #     if request.user.is_authenticated:
+    #         cart = Cart(owner=request.user)
+    #     else:
+    #         cart = Cart()
+    #     cart.save()
+    #     request.session['cart_id'] = cart.id
+    #     request.session['cart_count'] = cart.get_total_items()
+    #     request.session.is_modified = True
 
     context = {
-        'num_products': num_products,
-        'product_list': products,
-        'cart_id': request.session['cart_id'],
-        'cart_count': request.session['cart_count']
+        'product_list': products
     }
     # Render the HTML template index.html with the data in the context variable
     return render(request, 'index.html', context=context)

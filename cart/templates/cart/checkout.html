@@ -43,24 +43,23 @@
 
 	<div class="col-lg-6 box-element bg-white shadow-sm">
         <h4> Order Summary </h4>
-        <h6>Total: </h6>
-        <h6>Items: </h6>
-		{% for cartitem in cart_items %}
+        <h6>Total: ₹{{ order.get_total_price|floatformat:2 }}</h6>
+        <h6>Items: {{ order.get_total_quantity }}</h6>
+		{% for cart_item in cart_items %}
         <div class="row h-200 margin-5 bg-white shadow-sm">
             <div class="col-4 col-md-3 padding-zero align-self-center" height="100%">
-                {% load static %}
-                <img class="img-fluid" src="{% static 'images/placeholder.png' %}" height="100%">
+                <img class="img-fluid size-100" src="{{ cart_item.product.image.url }}" height="100%">
             </div>
             <div class="col-8 col-md-9">
                 <div class="row box-element">
                     <div class="col-12">
-                        <h6><a href="{{ cartitem.get_absolute_url }}">{{ cartitem.get_name }}</a></h6>
+                        <h6><a href="{{ cart_item.product.get_absolute_url }}">{{ cart_item.product.name }}</a></h6>
                     </div>
                     <div class="col-8 align-self-center">
-                        <strong class="my-auto">Quantity: {{ cartitem.quantity }}</strong>
+                        <strong class="my-auto">Quantity: {{ cart_item.quantity }}</strong>
                     </div>
                     <div class="col-8 col-md-4 align-self-center text-right">
-                        <strong class="my-auto">₹ {{ cartitem.get_price }}</strong>
+                        <strong class="my-auto">₹ {{ cart_item.get_total_price }}</strong>
                     </div>
                 </div>
             </div>

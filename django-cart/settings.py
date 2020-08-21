@@ -73,6 +73,14 @@ TEMPLATES = [
     },
 ]
 
+STATICFILES_DIR = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+MEDIA_URL = '/images/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
 WSGI_APPLICATION = 'django-cart.wsgi.application'
 
 

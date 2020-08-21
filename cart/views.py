@@ -1,4 +1,4 @@
-from cart.models import Cart, CartItem
+from cart.models import Cart, CartItem, Order, OrderItem
 from cart.serializers import CartSerializer, CartItemSerializer
 from django.shortcuts import render
 from django.http import Http404, JsonResponse
@@ -97,30 +97,38 @@ class CartItemView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class CartItemListView(ListView):
-    model = CartItem
-    paginate_by = 10
-    template_name = "cart/cart_detail.html"
-
-    def get_context_data(self, **kwargs):
-        # if 'cart_id' not in self.request.session:
-        #     if self.request.user.is_authenticated:
-        #         cart = Cart(owner=self.request.user)
-        #     else:
-        #         cart = Cart()
-        #     cart.save()
-        #     request.session['cart_id'] = cart.id
-        #     request.session['cart_count'] = cart.get_total_items()
-        #     request.session.is_modified = True
-        context = super(CartItemListView, self).get_context_data(**kwargs)
-        return context
+def cart_details(request):
+    if request.user.is_authenticated:
+        cart_user = request.user.cartuser
+        print(cart_user.email)
+        order, created = Order.objects.get_or_create(user=cart_user, complete=False)
+        # print(order.get_total)
+        items = order.orderitem_set.all()
+        print(items)
+    else:
+        items = []
+        order = {
+            'get_total_price': 0,
+            'get_total_quantity': 0
+        }
+    context = {'cart_items': items, 'order': order}
+    return render(request, 'cart/cart_detail.html', context)
 
 
 def checkout(request):
-    cart_items = CartItem.objects.all()
-
-    context = {
-        'cart_items': cart_items
-    }
+    if request.user.is_authenticated:
+        cart_user = request.user.cartuser
+        print(cart_user.email)
+        order, created = Order.objects.get_or_create(user=cart_user, complete=False)
+        # print(order.get_total)
+        items = order.orderitem_set.all()
+        print(items)
+    else:
+        items = []
+        order = {
+            'get_total_price': 0,
+            'get_total_quantity': 0
+        }
+    context = {'cart_items': items, 'order': order}
     return render(request, 'cart/checkout.html', context=context)
 
