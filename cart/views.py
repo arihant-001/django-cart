@@ -1,4 +1,4 @@
-from cart.models import Cart, CartItem, Order, OrderItem
+from cart.models import Cart, CartItem, Order, OrderItem, ShippingAddress
 from catalog.models import Product
 from cart.serializers import CartSerializer, CartItemSerializer
 from django.shortcuts import render
@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import json
+import datetime
 
 
 class CartView(APIView):
@@ -145,3 +146,27 @@ def get_cart_quantity(request):
         return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
 
     return JsonResponse("error", safe=False, status=status.HTTP_400_BAD_REQUEST)
+
+
+def process_order(request):
+    transaction_id = datetime.datetime.now().timestamp()
+    data = json.loads(request.body.decode('utf-8'))
+    print(data)
+    if request.user.is_authenticated:
+        cart_user = request.user.cartuser
+        order, created = Order.objects.get_or_create(user=cart_user, complete=False)
+        total = data['user']['total']
+        order.transaction_id = transaction_id
+        if total == order.get_total_price:
+            order.complete = True
+        order.save()
+
+        ShippingAddress.objects.create(
+            user=cart_user,
+            order=order,
+            address=data['ship-info']['address'],
+            city=data['ship-info']['city'],
+            state=data['ship-info']['state'],
+            zipcode=data['ship-info']['zipcode'],
+        )
+    return JsonResponse('Payment Complete', safe=False)

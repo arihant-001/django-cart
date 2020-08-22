@@ -40,6 +40,53 @@ function sendUpdateRequest(product_id, action) {
         console.log("fail to add to cart");
     })
 }
+
+function sendOrderData() {
+    console.log('ordered')
+
+    var form = document.getElementById('ship-form')
+    var userInfo = {
+        'name':null,
+        'email': null,
+        'total': total
+    }
+
+    var shipInfo = {
+        'address': null,
+        'city': null,
+        'state': null,
+        'zipcode': null
+    }
+
+    shipInfo.address = form.address.value
+    shipInfo.city = form.city.value
+    shipInfo.state = form.state.value
+    shipInfo.zipcode = form.zipcode.value
+
+
+    if(user == 'AnonymousUser') {
+        userInfo.name = form.name.value
+        userInfo.email = form.email.value
+    }
+    console.log(shipInfo)
+
+    const csrftoken = form.getElementsByTagName('input')[0].value
+    console.log(csrftoken + " sds")
+    $.ajax({
+        method: "POST",
+        headers: {
+            'x-CSRFToken': csrftoken,
+        },
+        url: "/cart/process_order/",
+        data: JSON.stringify({'user':userInfo, 'ship-info': shipInfo})
+    }).done(function(t) {
+        console.log(t)
+
+    }).fail(function(t) {
+        console.log("failed");
+    })
+
+}
 $( document ).ready(function() {
     console.log( "ready!" )
     updateCart()
@@ -54,4 +101,8 @@ $( document ).ready(function() {
         console.log(product_id)
         sendUpdateRequest(product_id, 'sub')
     });
+
+    $(document).on("click", "#make-payment", function() {
+        sendOrderData()
+    })
 });
