@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
-{% block content%}
+{% block content %}
 <div class="row">
 	<div class="col-lg-6">
 		<div class="box-element shadow-sm bg-white" id="form-wrapper">
-            <form id="form">
+            <form id="ship-form">
                 <div id="user-info">
                     <div class="form-field">
                         <input required class="form-control" type="text" name="name" placeholder="Name..">
@@ -34,11 +34,10 @@
                 <input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
             </form>
             <br>
-            <div class="box-element" hidden id="payment-info">
-                <small>Paypal Options</small>
-            </div>
 		</div>
-		
+        <div class="box-element" id="payment-info">
+            <small>Paypal Options</small>
+        </div>
 	</div>
 
 	<div class="col-lg-6 box-element bg-white shadow-sm">
@@ -67,4 +66,16 @@
         {% endfor %}
 	</div>
 </div>
+<script type="text/javascript">
+$(document).ready(function() {
+            //option A
+    $("#payment-info").hide()
+    $("#form-wrapper").submit(function(e){
+        e.preventDefault(e);
+        $(this).hide()
+        $("#payment-info").show()
+    });
+});
+</script>
+
 {% endblock content%}
