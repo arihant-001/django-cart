@@ -91,7 +91,7 @@ function sendOrderData() {
     var form = document.getElementById('ship-form')
     var userInfo = {
         'name':null,
-        'email': null
+        'email': null,
     }
 
     var shipInfo = {
@@ -155,10 +155,6 @@ $( document ).ready(function() {
             sendUpdateRequest(product_id, 'sub')
         }
     });
-
-    $(document).on("click", "#make-payment", function() {
-        sendOrderData()
-    })
 
 
     $("#payment-info").hide()
