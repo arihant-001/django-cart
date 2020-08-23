@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import json
 import datetime
+from . utils import get_cart_data, get_guest_order
 
 
 class CartView(APIView):
@@ -100,38 +101,11 @@ class CartItemView(APIView):
 
 
 def cart_details(request):
-    if request.user.is_authenticated:
-        cart_user = request.user.cartuser
-        print(cart_user.email)
-        order, created = Order.objects.get_or_create(user=cart_user, complete=False)
-        # print(order.get_total)
-        items = order.orderitem_set.all()
-        print(items)
-    else:
-        items = []
-        order = {
-            'get_total_price': 0,
-            'get_total_quantity': 0
-        }
-    context = {'cart_items': items, 'order': order}
-    return render(request, 'cart/cart_detail.html', context)
+    return render(request, 'cart/cart_detail.html', get_cart_data(request))
 
 
 def checkout(request):
-    if request.user.is_authenticated:
-        cart_user = request.user.cartuser
-        print(cart_user.email)
-        order, created = Order.objects.get_or_create(user=cart_user, complete=False)
-        items = order.orderitem_set.all()
-        print(items)
-    else:
-        items = []
-        order = {
-            'get_total_price': 0,
-            'get_total_quantity': 0
-        }
-    context = {'cart_items': items, 'order': order}
-    return render(request, 'cart/checkout.html', context=context)
+    return render(request, 'cart/checkout.html', context=get_cart_data(request))
 
 
 def get_cart_quantity(request):
@@ -141,7 +115,15 @@ def get_cart_quantity(request):
             order, created = Order.objects.get_or_create(user=cart_user, complete=False)
             quantity = order.get_total_quantity
         else:
+
+            try:
+                cart = json.loads(request.COOKIES['cart'])
+            except:
+                cart = {}
+
             quantity = 0
+            for i in cart:
+                quantity += cart[i]['quantity']
         data = {'quantity': quantity}
         return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
 
@@ -150,23 +132,23 @@ def get_cart_quantity(request):
 
 def process_order(request):
     transaction_id = datetime.datetime.now().timestamp()
+    print(request.body)
     data = json.loads(request.body.decode('utf-8'))
     print(data)
     if request.user.is_authenticated:
         cart_user = request.user.cartuser
         order, created = Order.objects.get_or_create(user=cart_user, complete=False)
-        total = data['user']['total']
-        order.transaction_id = transaction_id
-        if total == order.get_total_price:
-            order.complete = True
-        order.save()
-
-        ShippingAddress.objects.create(
-            user=cart_user,
-            order=order,
-            address=data['ship-info']['address'],
-            city=data['ship-info']['city'],
-            state=data['ship-info']['state'],
-            zipcode=data['ship-info']['zipcode'],
-        )
+    else:
+        cart_user, order = get_guest_order(request, data)
+    ShippingAddress.objects.create(
+        user=cart_user,
+        order=order,
+        address=data['ship-info']['address'],
+        city=data['ship-info']['city'],
+        state=data['ship-info']['state'],
+        zipcode=data['ship-info']['zipcode'],
+    )
+    order.transaction_id = transaction_id
+    order.complete = True
+    order.save()
     return JsonResponse('Payment Complete', safe=False)

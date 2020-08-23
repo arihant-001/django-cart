@@ -1,8 +1,6 @@
 function updateCartTag(q) {
     console.log(q)
     $("#cart-quantity").text(q);
-
-    console.log("added to cart");
 }
 
 function updateCart() {
@@ -41,14 +39,59 @@ function sendUpdateRequest(product_id, action) {
     })
 }
 
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return null;
+}
+function getCart() {
+    var cart = JSON.parse(getCookie('cart'))
+    if(cart == undefined) {
+        cart = {}
+        console.log('A cart is created')
+        document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+    }
+    return cart
+}
+
+function addCookie(productId, action) {
+    var cart = getCart()
+    console.log('Not logged in...')
+    if(action == 'add') {
+        if (cart[productId] == undefined) {
+            cart[productId] = {'quantity': 1}
+        } else {
+            cart[productId]['quantity'] += 1
+        }
+    } else if (action == 'sub') {
+        cart[productId]['quantity'] -= 1
+        if(cart[productId]['quantity'] <= 0) {
+            console.log('Item deleted')
+            delete cart[productId]
+        }
+    }
+    console.log(cart)
+    document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+    location.reload()
+}
+
 function sendOrderData() {
     console.log('ordered')
 
     var form = document.getElementById('ship-form')
     var userInfo = {
         'name':null,
-        'email': null,
-        'total': total
+        'email': null
     }
 
     var shipInfo = {
@@ -78,9 +121,12 @@ function sendOrderData() {
             'x-CSRFToken': csrftoken,
         },
         url: "/cart/process_order/",
-        data: JSON.stringify({'user':userInfo, 'ship-info': shipInfo})
+        data: JSON.stringify({'user-info':userInfo, 'ship-info': shipInfo})
     }).done(function(t) {
         console.log(t)
+        cart = {}
+        document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+        window.location.href = '/'
 
     }).fail(function(t) {
         console.log("failed");
@@ -93,16 +139,36 @@ $( document ).ready(function() {
     $(document).on("click", ".add-to-cart", function(){
         var product_id = $(this).attr("data-product-id")
         console.log(product_id)
-        sendUpdateRequest(product_id, 'add')
+        if(user == 'AnonymousUser') {
+            addCookie(product_id, 'add')
+        } else {
+            sendUpdateRequest(product_id, 'add')
+        }
     });
 
     $(document).on("click", ".sub-from-cart", function(){
         var product_id = $(this).attr("data-product-id")
         console.log(product_id)
-        sendUpdateRequest(product_id, 'sub')
+        if(user == 'AnonymousUser') {
+            addCookie(product_id, 'sub')
+        } else {
+            sendUpdateRequest(product_id, 'sub')
+        }
     });
 
     $(document).on("click", "#make-payment", function() {
         sendOrderData()
     })
+
+
+    $("#payment-info").hide()
+    $("#form-wrapper").submit(function(e){
+        e.preventDefault(e);
+        $(this).hide()
+        $("#payment-info").show()
+    });
+    if (user != 'AnonymousUser'){
+        $("#user-info").html('')
+    }
+
 });

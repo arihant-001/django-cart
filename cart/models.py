@@ -39,7 +39,7 @@ class Order(models.Model):
     transaction_id = models.CharField(max_length=200, null=True)
 
     def __str__(self):
-        return self.transaction_id
+        return str(self.id)
 
     @property
     def get_total_price(self):
