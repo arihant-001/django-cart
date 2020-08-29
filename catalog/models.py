@@ -36,13 +36,12 @@ class Product(models.Model):
         return url
 
     def get_absolute_url(self):
-        return reverse('product-detail', args=[str(self.id)])
+        return reverse('product_detail', args=[str(self.id)])
 
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
-    description = models.TextField(max_length=100)
-    photo = models.ImageField(upload_to='category_images', blank=True)
+    description = models.TextField(max_length=100, blank=True)
 
     def __str__(self):
         return self.name

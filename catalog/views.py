@@ -1,27 +1,20 @@
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, ListView
 
-from .models import Product, Category, UserProfile
+from .models import Product, Category
 
 
 def index(request):
     products = Product.objects.all()
-    # if 'cart_id' not in request.session:
-    #     if request.user.is_authenticated:
-    #         cart = Cart(owner=request.user)
-    #     else:
-    #         cart = Cart()
-    #     cart.save()
-    #     request.session['cart_id'] = cart.id
-    #     request.session['cart_count'] = cart.get_total_items()
-    #     request.session.is_modified = True
+    categories = Category.objects.all()
 
     context = {
-        'product_list': products
+        'product_list': products,
+        'categories_list': categories,
     }
-    # Render the HTML template index.html with the data in the context variable
+
     return render(request, 'index.html', context=context)
 
 
@@ -65,72 +58,15 @@ class ProductListView(ListView):
         return context
 
 
-class ProductCreateView(CreateView):
-    model = Product
-    template_name = "catalog/product_create.html"
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        return super().form_valid(form)
-
-
-class ProductUpdateView(UpdateView):
-    model = Product
-    template_name = "catalog/product_update.html"
-
-
-class ProductDeleteView(DeleteView):
-    model = Product
-    template_name = "catalog/product_delete.html"
-
-
-# Product Categories views
 class CategoryDetailView(DetailView):
     model = Category
     template_name = "catalog/category_detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(CategoryDetailView, self).get_context_data(**kwargs)
+        products = Product.objects.filter(category=kwargs['object'].id)
+        categories = Category.objects.all()
+        context['product_list'] = products
+        context['categories_list'] = categories
+        return context
 
-class CategoryListView(ListView):
-    model = Category
-    template_name = "catalog/category_list.html"
-
-
-class CategoryCreateView(CreateView):
-    model = Category
-    template_name = "catalog/category_create.html"
-
-
-class CategoryUpdateView(UpdateView):
-    model = Category
-    template_name = "catalog/category_update.html"
-
-
-class CategoryDeleteView(DeleteView):
-    model = Category
-    template_name = "catalog/category_delete.html"
-
-
-# UserProfile views
-class UserProfileDetailView(DetailView):
-    model = UserProfile
-    template_name = "catalog/userprofile_detail.html"
-
-
-class UserProfileListView(ListView):
-    model = UserProfile
-    template_name = "catalog/userprofile_list.html"
-
-
-class UserProfileCreateView(CreateView):
-    model = UserProfile
-    template_name = "catalog/userprofile_create.html"
-
-
-class UserProfileUpdateView(UpdateView):
-    model = UserProfile
-    template_name = "catalog/userprofile_update.html"
-
-
-class UserProfileDeleteView(DeleteView):
-    model = UserProfile
-    template_name = "catalog/userprofile_delete.html"

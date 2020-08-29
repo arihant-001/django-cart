@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white category shadow-sm">
+    <h6>Home/ {{ category.name }}</h6>
+</div>
+{% if product_list %}
+<div class="row justify-content-md-center">
+    {% for product in product_list %}
+    <div class="col-lg-3 bg-white margin-15 padding-zero shadow-sm rounded">
+        <center>
+            <img class="img-fluid size-200 margin-auto" src="{{ product.image_url }}"/>
+        </center>
+        <div class="box-element">
+            <a href="{{ product.get_absolute_url }}">
+                <h6 class="align-self-center"><strong>{{ product.name }}</strong></h6>
+            </a>
+            <span class="product-price">₹{{ product.price|floatformat:2 }}</span>
+            <br>
+            <button class="btn btn-outline-danger add-to-cart" data-product-id="{{ product.id }}">Add to cart</button>
+       </div>
+
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>There are no products in the store.</p>
+{% endif %}
+{% endblock %}
