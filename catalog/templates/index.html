@@ -3,19 +3,19 @@
 {% if product_list %}
 <div class="row justify-content-md-center">
     {% for product in product_list %}
-    <div class="col-lg-3 bg-white margin-15 padding-zero shadow-sm">
+    <div class="col-lg-3 bg-white margin-15 padding-zero shadow-sm rounded">
         <center>
             <img class="img-fluid size-200 margin-auto" src="{{ product.image_url }}"/>
         </center>
         <div class="box-element">
             <a href="{{ product.get_absolute_url }}">
-                <h6 class="align-self-center text-dark"><strong>{{ product.name }}</strong></h6>
+                <h6 class="align-self-center"><strong>{{ product.name }}</strong></h6>
             </a>
-            <hr class="margin-5">
-            <a class="btn btn-primary add-to-cart" data-product-id="{{ product.id }}">Add to cart</a>
-            <h4 class="product-price">₹{{ product.price|floatformat:2 }}</h4>
+            <span class="product-price">₹{{ product.price|floatformat:2 }}</span>
+            <br>
+            <button class="btn btn-outline-danger add-to-cart" data-product-id="{{ product.id }}">Add to cart</button>
+       </div>
 
-        </div>
     </div>
     {% endfor %}
 </div>
