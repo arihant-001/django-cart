@@ -1,1 +1,1 @@
-web: gunicorn django-cart.wsgi
+web: gunicorn django-cart.wsgi --log-file -
