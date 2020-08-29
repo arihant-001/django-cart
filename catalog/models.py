@@ -1,19 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.models import User
 from datetime import datetime
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='profile_image', blank=True)
-    phone = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.user + "profile"
-
-    def get_absolute_url(self):
-        return reverse("profile_detail", kwargs={"pk": self.pk})
 
 
 class Product(models.Model):
@@ -32,7 +19,7 @@ class Product(models.Model):
         try:
             url = self.image.url
         except:
-            url = ''
+            url = '/images/placeholder.png'
         return url
 
     def get_absolute_url(self):
