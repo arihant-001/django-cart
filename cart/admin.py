@@ -1,15 +1,5 @@
 from django.contrib import admin
-from cart.models import Cart, CartItem, Order, OrderItem, ShippingAddress
-
-
-@admin.register(Cart)
-class CartAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(CartItem)
-class CartItemAdmin(admin.ModelAdmin):
-    pass
+from cart.models import Order, OrderItem, ShippingAddress
 
 
 @admin.register(Order)
