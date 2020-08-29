@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from rest_framework import status
 import json
 import datetime
-from . utils import get_cart_data, get_guest_order
+from . utils import get_cart_data, get_guest_order, get_orders_data
 
 
 def update_cart_quantity(request):
@@ -39,6 +39,10 @@ def checkout(request):
     return render(request, 'cart/checkout.html', context=get_cart_data(request))
 
 
+def orders(request):
+    return render(request, 'cart/orders_list.html', context=get_orders_data(request))
+
+
 def get_cart_quantity(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
@@ -63,9 +67,7 @@ def get_cart_quantity(request):
 
 def process_order(request):
     transaction_id = datetime.datetime.now().timestamp()
-    print(request.body)
     data = json.loads(request.body.decode('utf-8'))
-    print(data)
     if request.user.is_authenticated:
         cart_user = request.user.cartuser
         order, created = Order.objects.get_or_create(user=cart_user, complete=False)

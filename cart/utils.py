@@ -1,5 +1,5 @@
 from catalog.models import Product
-from cart.models import Order, OrderItem
+from cart.models import Order, OrderItem, ShippingAddress
 from user.models import CartUser
 import json
 
@@ -81,3 +81,43 @@ def get_guest_order(request, data):
             quantity=item['quantity']
         )
     return cart_user, order
+
+
+def get_orders_data(request):
+    if request.user.is_authenticated:
+        cart_user = request.user.cartuser
+        orders = Order.objects.filter(user=cart_user, complete=True)
+        orders_list = []
+        for order in orders:
+            items = []
+            order_items = order.orderitem_set.all()
+            for order_item in order_items:
+                product = Product.objects.get(id=order_item.product.id)
+                item = {
+                    'product': {
+                        'id': product.id,
+                        'name': product.name,
+                        'price': product.price,
+                        'image_url': product.image_url,
+                        'get_absolute_url': product.get_absolute_url,
+                    },
+                    'quantity': order_item.quantity,
+                    'get_total_price': order_item.get_total_price
+                }
+                items.append(item)
+
+            ship_address = ShippingAddress.objects.get(order=order)
+            order = {
+                'transaction_id': order.transaction_id,
+                'get_total_price': order.get_total_price,
+                'get_total_quantity': order.get_total_quantity,
+                'date_ordered': order.date_ordered,
+                'address': ship_address,
+                'items': items
+            }
+            orders_list.append(order)
+
+    else:
+        orders_list = []
+
+    return {'orders_list': orders_list}

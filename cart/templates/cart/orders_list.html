@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row bg-white orders-heading shadow-sm">
+    <h6>Home/ Orders</h6>
+</div>
+<div class="row">
+	{% for order in orders_list %}
+	<div class="col-lg-12 box-element order-list bg-white shadow-sm">
+        <h6> Order Transaction Id: {{ order.transaction_id }} </h6>
+        <h6>Total: ₹{{ order.get_total_price|floatformat:2 }}</h6>
+        <h6>Items: {{ order.get_total_quantity }}</h6>
+        <h6>Date Ordered: {{ order.date_ordered }}</h6>
+        <h6>Shipping Address: {{ order.address }}</h6>
+		{% for cart_item in order.items %}
+        <div class="row h-200 margin-5 bg-white shadow-sm">
+            <div class="col-4 col-md-3 padding-zero align-self-center" height="100%">
+                <img class="img-fluid size-100" src="{{ cart_item.product.image_url }}" height="100%">
+            </div>
+            <div class="col-8 col-md-9">
+                <div class="row box-element">
+                    <div class="col-12">
+                        <h6><a href="{{ cart_item.product.get_absolute_url }}">{{ cart_item.product.name }}</a></h6>
+                    </div>
+                    <div class="col-8 align-self-center">
+                        <strong class="my-auto">Quantity: {{ cart_item.quantity }}</strong>
+                    </div>
+                    <div class="col-8 col-md-4 align-self-center text-right">
+                        <strong class="my-auto">₹ {{ cart_item.get_total_price }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+		{% endfor %}
+	</div>
+	{% endfor %}
+</div>
+{% endblock content%}

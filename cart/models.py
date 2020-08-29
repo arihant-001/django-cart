@@ -5,7 +5,7 @@ from user.models import CartUser
 
 class Order(models.Model):
     user = models.ForeignKey(CartUser, on_delete=models.SET_NULL, null=True, blank=True)
-    date_ordered = models.DateTimeField(auto_now_add=True)
+    date_ordered = models.DateTimeField(auto_now=True)
     complete = models.BooleanField(default=False, null=True, blank=False)
     transaction_id = models.CharField(max_length=200, null=True)
 
@@ -30,7 +30,7 @@ class ShippingAddress(models.Model):
     zipcode = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return self.address
+        return self.address + ', ' + self.city + ', ' + self.state + ', ' + self.zipcode
 
 
 class OrderItem(models.Model):
