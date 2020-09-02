@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView, ListView
-
+from user.models import CartUser
 from .models import Product, Category
 
 
@@ -27,6 +27,12 @@ def register(request):
             user = form.save()
             username = form.cleaned_data.get('username')
             login(request, user)
+            cart_user = CartUser.objects.create(
+                user=user,
+                name=user.first_name + user.last_name,
+                email=user.email,
+            )
+            cart_user.save()
             return redirect('index')
         else:
             for msg in form.error_messages:
