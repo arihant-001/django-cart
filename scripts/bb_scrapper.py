@@ -27,7 +27,7 @@ for c in categories:
     for i in range(0, len(prods)):
         prod_url = 'http://www.bigbasket.com' + prods[i]['absolute_url']
         soup = BeautifulSoup(requests.get(prod_url).text, "html.parser")
-        divs = soup.find_all(class_='_26MFu  ')
+        divs = soup.find_all(class_='_26MFu')
         desc = '.'.join(divs[0].text.strip().split('.')[:-3])
         details = [prods[i]['p_desc'], prods[i]['mrp'], prods[i]['p_img_url'], desc]
         data.append(details)

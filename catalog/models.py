@@ -4,8 +4,8 @@ from datetime import datetime
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.TextField(max_length=100)
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=200)
     image = models.ImageField(null=True, blank=True)
     price = models.FloatField()
     category = models.ForeignKey("catalog.Category", on_delete=models.CASCADE)
