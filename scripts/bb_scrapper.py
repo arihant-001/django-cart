@@ -1,6 +1,6 @@
 import requests
 import csv
-
+from bs4 import BeautifulSoup
 headers = {
     'authority': 'scrapeme.live',
     'dnt': '1',
@@ -25,7 +25,11 @@ for c in categories:
     file = open('./dummy_data/' + c + '.csv', 'w+', newline='')
     data = [columns]
     for i in range(0, len(prods)):
-        details = [prods[i]['llc_n'], prods[i]['mrp'], prods[i]['p_img_url'], prods[i]['p_desc']]
+        prod_url = 'http://www.bigbasket.com' + prods[i]['absolute_url']
+        soup = BeautifulSoup(requests.get(prod_url).text, "html.parser")
+        divs = soup.find_all(class_='_26MFu  ')
+        desc = '.'.join(divs[0].text.strip().split('.')[:-3])
+        details = [prods[i]['p_desc'], prods[i]['mrp'], prods[i]['p_img_url'], desc]
         data.append(details)
         print(details)
 

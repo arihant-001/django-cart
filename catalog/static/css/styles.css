@@ -16,6 +16,14 @@ body {
     margin: 5px;
 }
 
+.margin-top-20{
+    margin-top: 20px;
+}
+
+.margin-top-15{
+    margin-top: 15px;
+}
+
 .product-wrapper{
     margin:auto;
 }
@@ -34,6 +42,13 @@ body {
 }
 
 .product-price{
+    display:inline-block;
+    margin-top:auto;
+    margin-bottom: auto;
+    font-size: 16px;
+}
+
+.product-description{
     display:inline-block;
     margin-top:auto;
     margin-bottom: auto;
