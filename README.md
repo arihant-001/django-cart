@@ -34,3 +34,31 @@ $ pip3 install -r requirements.txt
 # inside the cloned directory
 $ python3 manage.py runserver
 ```
+
+## Docker
+Install [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/)
+```zsh
+# Build and start containers
+$ doker-compose up --build
+
+# create tables
+$ docker-compose exec web python manage.py migrate
+
+# create admin
+$ docker-compose exec web python manage.py createsuperuser
+```
+
+Create dummy data
+```zsh
+# open web container shell
+$ docker exec -it django-cart_web_1 bash
+
+# go to scripts
+$ cd scripts
+
+# download data
+$ python bb_scrapper.py
+
+# populate data in db
+$ python populate_product.py
+```
