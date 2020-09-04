@@ -2,6 +2,20 @@
 
 `django-cart` is a basic model for ecommerce websites implemented using `django` and `postres`.
 
+## Demo Website
+View demo site at [django-cart](https://django-cart.herokuapp.com/)
+```
+user credentials
+username: test
+password: test@password
+```
+View admin site at [admin](https://django-cart.herokuapp.com/admin)
+```
+user credentials
+username: admin
+password: admin
+```
+
 ## Project Setup on localhost
 
 ### Clone the repository
